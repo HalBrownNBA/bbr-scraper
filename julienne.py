@@ -2,9 +2,10 @@ from BeautifulSoup import BeautifulSoup
 from collections import OrderedDict
 
 class Julienne:
-    def __init__(self, table):
+    def __init__(self, table, debug=False):
         self.soup = BeautifulSoup(table.strip())
         self.row_list = self.soup.first("tbody").findAll("tr")
+        self.debug = debug
 
     def validate(self):
         valid_toplevel = len(self.soup.contents) == 1 and self.soup.contents[0].name == "table"
@@ -14,7 +15,11 @@ class Julienne:
         return valid_toplevel and valid_body
 
     def columns(self):
-        return [tag.string.strip() for tag in self.soup.findAll("th")]
+        if self.debug: 
+            print(self.soup.findAll("th"))
+            import pdb; pdb.set_trace()
+        columns = [tag.string.strip() for tag in self.soup.findAll("th")]
+        return columns
 
     def rows(self):
         rows_sans_whitespace = [[unicode(field.string).strip() for field in row if field != '\n'] for row in self.row_list]

@@ -19,14 +19,9 @@ def scrape():
             player_gamelogs = soup.find(id="pgl_basic")
             if player_gamelogs:
                 cleaned_gamelogs = player_gamelogs.prettify()
-                player_table = Julienne(cleaned_gamelogs).select(columns=['3P', '3P%', 'PTS', 'TRB', 'AST', 'MP'])
-                print(serialize_record_adhoc(each_team_name, nba_player_name, player_table))
-                map_from_team_to_player_game_stats[each_team_name][nba_player_name] = player_table
-            else:
-                map_from_team_to_player_game_stats[each_team_name][nba_player_name] = None
-            
+                player_table = Julienne(cleaned_gamelogs).select(columns=['3P', '3P%', 'PTS', 'TRB', 'AST', 'MP', 'FG%'])
 
-    return map_from_team_to_player_game_stats
+                print(serialize_record_adhoc(each_team_name, nba_player_name, player_table))
 
 # a record is basically a comma-separated list of player team, player name, player game logs
 # we are heavily relying on the idea that there are no commas in player team or player name
@@ -63,21 +58,21 @@ def all_nba_players_gamelog_urls(team_url):
 
 # define "each NBA team" to be
 def all_nba_teams():
-	# when you go to http://www.basketball-reference.com/teams/
-	all_teams = requests.get('http://www.basketball-reference.com/teams/')
-	soup = BeautifulSoup(all_teams.text)
-	# to look at 'active franchises', we need to look at the first table
-	# we know that tables have the html class "stw," so we'll ask beautiful soup for all of the element with the class stw
-	all_stw_tables = soup.findAll(True, "stw")
-	active_teams_table = all_stw_tables[0]
-	# only the children of the table whose class is full_table
-	list_of_team_urls = []
-	for each_a_tag in active_teams_table.findAll('a'):
-		current_year = "2015"
-                team_name = each_a_tag.string
-                team_url = "http://www.basketball-reference.com" + each_a_tag['href'] + current_year + ".html"
-		list_of_team_urls.append((team_name, team_url))
-        print(list_of_team_urls)
-	return list_of_team_urls
-		
-# alldata = scrape()
+    # when you go to http://www.basketball-reference.com/teams/
+    all_teams = requests.get('http://www.basketball-reference.com/teams/')
+    soup = BeautifulSoup(all_teams.text)
+    # to look at 'active franchises', we need to look at the first table
+    # we know that tables have the html class "stw," so we'll ask beautiful soup for all of the element with the class stw
+    all_stw_tables = soup.findAll(True, "stw")
+    active_teams_table = all_stw_tables[0]
+    # only the children of the table whose class is full_table
+    list_of_team_urls = []
+    for each_a_tag in active_teams_table.findAll('a'):
+            current_year = "2015"
+            team_name = each_a_tag.string
+            team_url = "http://www.basketball-reference.com" + each_a_tag['href'] + current_year + ".html"
+            list_of_team_urls.append((team_name, team_url))
+    print(list_of_team_urls)
+    return list_of_team_urls
+
+scrape()
