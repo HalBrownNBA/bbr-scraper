@@ -1,3 +1,5 @@
+import pickle
+
 def transform_scraped_data(map_from_team_to_player_game_stats):
     STATS = ['3P', '3P%', 'PTS', 'TRB', 'AST', 'MP']
 
