@@ -80,4 +80,4 @@ def all_nba_teams():
         print(list_of_team_urls)
 	return list_of_team_urls
 		
-alldata = scrape()
+# alldata = scrape()
