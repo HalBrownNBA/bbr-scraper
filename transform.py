@@ -1,5 +1,5 @@
 import sys
-from scraper import deserialize_record_adhoc
+from adhoc import deserialize_record_adhoc , serialize_record_adhoc
 
 def deserialize_data(datafile):
     alldata = {} # this is map_from_team_to_player_game_stats

@@ -2,6 +2,7 @@ import requests
 from julienne import Julienne
 from BeautifulSoup import BeautifulSoup
 import json
+from adhoc import deserialize_record_adhoc , serialize_record_adhoc
 
 # http://www.basketball-reference.com/players/d/duranke01/gamelog/2015/
 
@@ -11,10 +12,10 @@ import json
 def scrape():
     map_from_team_to_player_game_stats = {}
     for each_team_name, each_team_url in all_nba_teams():
-        print("Processing " + each_team_name + "...")
+        #print("Processing " + each_team_name + "...")
         map_from_team_to_player_game_stats[each_team_name] = {}
         for nba_player_name, nba_player_gamelog_url in all_nba_players_gamelog_urls(each_team_url):
-            print("Processing " + nba_player_name + "...")
+            #print("Processing " + nba_player_name + "...")
             soup = BeautifulSoup(requests.get(nba_player_gamelog_url).text)
             player_gamelogs = soup.find(id="pgl_basic")
             if player_gamelogs:
@@ -25,14 +26,6 @@ def scrape():
 
 # a record is basically a comma-separated list of player team, player name, player game logs
 # we are heavily relying on the idea that there are no commas in player team or player name
-def deserialize_record_adhoc(record):
-    record_fields = record.strip().split(',')
-    player_team, player_name = (record_fields[0], record_fields[1])
-    player_table = json.loads(','.join(record_fields[2:len(record_fields)]))
-    return (player_team, player_name, player_table)
-
-def serialize_record_adhoc(team_name, player_name, player_table):
-    return team_name + "," + player_name + "," + json.dumps(player_table)
 
 def all_nba_players_gamelog_urls(team_url):
     if "NJN" in team_url: # TODO: fix this
@@ -72,7 +65,9 @@ def all_nba_teams():
             team_name = each_a_tag.string
             team_url = "http://www.basketball-reference.com" + each_a_tag['href'] + current_year + ".html"
             list_of_team_urls.append((team_name, team_url))
-    print(list_of_team_urls)
+    #print(list_of_team_urls)
     return list_of_team_urls
 
 scrape()
+
+
